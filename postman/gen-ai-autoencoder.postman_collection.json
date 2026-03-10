@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Gen AI Autoencoder API",
+    "_postman_id": "a6c5a48e-9f8f-4f31-8454-d7f25df7b9c1",
+    "description": "Colección para probar la API de autoencoder.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Health status is ok', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.status).to.eql('ok');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reconstruct",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vector\": [1, 0, 1]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/reconstruct",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reconstruct"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has input and reconstruction', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.have.property('input');",
+              "    pm.expect(data).to.have.property('reconstruction');",
+              "    pm.expect(data.reconstruction.length).to.eql(3);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    }
+  ]
+}
