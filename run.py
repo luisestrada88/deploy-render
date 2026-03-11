@@ -32,7 +32,14 @@ def build_and_train_autoencoder() -> tf.keras.Model:
 
 
 app = FastAPI(title="Autoencoder API", version="1.0.0")
-model = build_and_train_autoencoder()
+model = None
+
+
+def get_model() -> tf.keras.Model:
+    global model
+    if model is None:
+        model = build_and_train_autoencoder()
+    return model
 
 
 @app.get("/health")
@@ -43,8 +50,9 @@ def health() -> dict:
 @app.post("/reconstruct")
 def reconstruct(payload: InputPayload) -> dict:
     try:
+        current_model = get_model()
         vector = np.array([payload.vector], dtype=np.float32)
-        prediction = model.predict(vector, verbose=0)[0].tolist()
+        prediction = current_model.predict(vector, verbose=0)[0].tolist()
         return {
             "input": payload.vector,
             "reconstruction": prediction,
