@@ -47,6 +47,14 @@ def health() -> dict:
     return {"status": "ok"}
 
 
+@app.get("/")
+def root() -> dict:
+    return {
+        "message": "Autoencoder API running",
+        "endpoints": ["/health", "/reconstruct", "/docs"],
+    }
+
+
 @app.post("/reconstruct")
 def reconstruct(payload: InputPayload) -> dict:
     try:
